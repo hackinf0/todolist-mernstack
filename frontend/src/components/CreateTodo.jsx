@@ -4,6 +4,8 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 function CreateTodo() {
   const [todoTitle,setTodoTitle]= useState('')
   const [todoList,setTodoList] = useState([])
+  const [checked,setChecked] = useState(false)
+
   const handleInput = (e)=>{
     console.log(e.target.value)
     setTodoTitle(e.target.value)
@@ -12,8 +14,25 @@ function CreateTodo() {
   const addTodo = ()=>{
     //todoList.push({title:todoTitle})
     if(todoTitle==='') return;
-    setTodoList(oldTodoList => [...oldTodoList, {title:todoTitle,id:Date.now(),check:false}])
+    setTodoList([...todoList, {title:todoTitle,id:Date.now(),check:false}])
     setTodoTitle('')
+  }
+
+  const isChecked =(id) =>{
+     setTodoList(todoList.map(todo => {
+       if(todo.id === id && todo.check){
+        return {...todo, check:false}
+       }
+       else{
+        return {...todo,check:true}
+       }
+     }))
+     console.log(todoList)
+  }
+ 
+
+  const handleDelete = (id) =>{
+    setTodoList(todoList.filter(todo=> todo.id !== id ))
   }
   console.log('todoTitle',todoTitle)
   console.log('todoList',todoList)
@@ -37,9 +56,9 @@ function CreateTodo() {
         </select>
       </div>
       <div className="flex flex-col items-center  mt-5 justify-center">
-      <TodoList  todoList={todoList}  />
+      <TodoList  handleDelete={handleDelete} todoList={todoList} isChecked={isChecked} />
       </div>
-      <div className="flex h-full justify-end items-end m-5">
+      <div className="flex h-full justify-end items-end mb-5 mr-5">
         <button onClick={addTodo}>
           <PlusCircleIcon className="w-16 h-16 text-green-500" />
         </button>
